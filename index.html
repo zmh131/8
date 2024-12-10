@@ -1,0 +1,244 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>活在背面的人</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <style>
+        a {
+            color: white;
+        }
+
+        .terminal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 60%;
+            padding: 0 20%;
+            background-color: #010101;
+            color: white; /* 文字颜色改为白色 */
+            font-family: consolas;
+            word-wrap: break-all;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .terminal #title {
+            text-align: center;
+            width: 100%;
+            font-size: 6em;
+            margin-bottom: 20px;
+            filter: blur(0px); /* 初始模糊效果 */
+            transition: filter 0.5s ease; /* 平滑过渡 */
+        }
+        .terminal .text {
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .terminal .cursor {
+            display: inline;
+            animation: blink 0.75s linear infinite;
+        }
+        .terminal .c {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+        }
+        .terminal .c .hearth {
+            display: inline !important;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 0;
+            }
+            33% {
+                opacity: 1;
+            }
+            66% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .cover-image {
+            max-width: 600px; /* 调整最大宽度以适应横图 */
+            height: auto;
+            display: block;
+            margin: 20px 0;
+            cursor: pointer; /* 鼠标悬停时显示为指针 */
+            filter: blur(0px); /* 初始模糊效果 */
+            transition: filter 0.5s ease; /* 平滑过渡 */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #010101;
+        }
+
+        /* 破碎效果 */
+        .shattered {
+            position: relative;
+        }
+
+        .shattered::before,
+        .shattered::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            z-index: -1;
+            animation: shatter 1s forwards;
+        }
+
+        .shattered::before {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            animation-delay: 0s;
+        }
+
+        .shattered::after {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            animation-delay: 0.5s;
+        }
+
+        @keyframes shatter {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(100px, 100px); /* 增加位移幅度 */
+            }
+            100% {
+                transform: translate(200px, 200px); /* 增加位移幅度 */
+                opacity: 0;
+            }
+        }
+
+        /* 外轮廓破碎效果 */
+        .shattered-outline::before,
+        .shattered-outline::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            z-index: -2;
+            animation: outline-shatter 1s forwards;
+        }
+
+        .shattered-outline::before {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            animation-delay: 0s;
+        }
+
+        .shattered-outline::after {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            animation-delay: 0.5s;
+        }
+
+        @keyframes outline-shatter {
+            0% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(-100px, -100px); /* 反向位移幅度 */
+            }
+            100% {
+                transform: translate(-200px, -200px); /* 反向位移幅度 */
+                opacity: 0;
+            }
+        }
+    </style>
+    <script src='js/jquery.min.js'></script>
+</head>
+<body translate="no">
+    <div class='terminal'>
+        <h1 id='title' class='shattered shattered-outline'>活在背面的人</h1>
+        <img src="images/cover.png" alt="封面图片" class="cover-image shattered shattered-outline" id="coverImage">
+        <div class='text' id='text_1' class='shattered shattered-outline'></div>
+        <div class='text' id='text_2' class='shattered shattered-outline'></div>
+        <div class='text' id='text_3' class='shattered shattered-outline'></div>
+        <div class='cursor'>_</div>
+        <div class='c'>
+            活在背面的人出版社
+        </div>
+        <audio id="backgroundMusic" loop>
+            <source src="music/background.mp3" type="audio/mpeg">
+            您的浏览器不支持 audio 元素。
+        </audio>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const text1 = document.getElementById('text_1');
+            const text2 = document.getElementById('text_2');
+            const text3 = document.getElementById('text_3');
+
+            // 示例文本
+            text1.textContent = "请点击木棺";
+            text2.textContent = "未见其人，先闻其声。";
+            text3.textContent = "我们很多人是见过世面的，但好像是没见过世界的另一面";
+
+            // 动态更新光标
+            setInterval(() => {
+                const cursor = document.querySelector('.cursor');
+                cursor.style.opacity = cursor.style.opacity === '1' ? '0' : '1';
+            }, 500);
+
+            // 点击图片时播放音乐
+            const coverImage = document.getElementById('coverImage');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const title = document.getElementById('title');
+
+            coverImage.addEventListener('click', function() {
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play();
+                    title.classList.add('shattered', 'shattered-outline');
+                    coverImage.classList.add('shattered', 'shattered-outline');
+                    text1.classList.add('shattered', 'shattered-outline');
+                    text2.classList.add('shattered', 'shattered-outline');
+                    text3.classList.add('shattered', 'shattered-outline');
+                } else {
+                    backgroundMusic.pause();
+                    title.classList.remove('shattered', 'shattered-outline');
+                    coverImage.classList.remove('shattered', 'shattered-outline');
+                    text1.classList.remove('shattered', 'shattered-outline');
+                    text2.classList.remove('shattered', 'shattered-outline');
+                    text3.classList.remove('shattered', 'shattered-outline');
+                }
+            });
+
+            // 动态模糊效果
+            let isBlurred = false;
+            setInterval(() => {
+                if (isBlurred) {
+                    title.style.filter = 'blur(5px)';
+                    coverImage.style.filter = 'blur(5px)';
+                    isBlurred = false;
+                } else {
+                    title.style.filter = 'blur(0px)';
+                    coverImage.style.filter = 'blur(0px)';
+                    isBlurred = true;
+                }
+            },1000);
+        });
+    </script>
+</body>
+</html>
+
+```
